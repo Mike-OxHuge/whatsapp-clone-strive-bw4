@@ -1,12 +1,53 @@
 import express from "express";
-import userModel from "./schema.js";
+import UserModel from "./schema.js";
+import { JWTAuthMiddleware, JWTAuth, renewTokens } from "../../auth/index.js";
 
 const router = express.Router();
 
+router.route("/renew-tokens").post(async (req, res) => {
+  try {
+    const { oldRefreshToken } = req.cookies;
+    const { accessToken, refreshToken } = await renewTokens(actualRefreshToken);
+    res.cookie("accessToken", accessToken, { httpOnly: true });
+    res.send({ accessToken, refreshToken });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.route("/register").post(async (req, res, next) => {
   try {
-    const newUser = await new userModel(req.body).save();
+    const newUser = await new UserModel(req.body).save();
     res.status(201).send(newUser);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.route("/login").post(async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await UserModel.checkCredentials(email, password);
+    if (user) {
+      const { accessToken, refreshToken } = await JWTAuth(user);
+      res.cookie("accessToken", accessToken, { httpOnly: true });
+      res.cookie("oldRefreshToken", refreshToken, {
+        httpOnly: true,
+        path: "/api/v1/user/renew-tokens",
+      });
+
+      res.status(200).send({ accessToken, refreshToken }); // access token stays on client
+    } else {
+      next(createError(401, "Credentials not valid!"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.route("/me").get(JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    res.status(200).send("all good");
   } catch (error) {
     next(error);
   }
