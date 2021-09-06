@@ -7,7 +7,8 @@ const router = express.Router();
 router.route("/renew-tokens").post(async (req, res) => {
   try {
     const { oldRefreshToken } = req.cookies;
-    const { accessToken, refreshToken } = await renewTokens(actualRefreshToken);
+    console.log(oldRefreshToken); // undefined
+    const { accessToken, refreshToken } = await renewTokens(oldRefreshToken);
     res.cookie("accessToken", accessToken, { httpOnly: true });
     res.send({ accessToken, refreshToken });
   } catch (error) {
@@ -31,7 +32,7 @@ router.route("/login").post(async (req, res, next) => {
     if (user) {
       const { accessToken, refreshToken } = await JWTAuth(user);
       res.cookie("accessToken", accessToken, { httpOnly: true });
-      res.cookie("oldRefreshToken", refreshToken, {
+      res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         path: "/api/v1/user/renew-tokens",
       });
