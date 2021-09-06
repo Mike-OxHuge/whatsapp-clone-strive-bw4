@@ -8,7 +8,7 @@ const createAccessToken = (payload) =>
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: 15 },
+      { expiresIn: "15m" },
       (err, token) => {
         if (err) {
           reject(err);
@@ -112,7 +112,6 @@ export const renewTokens = async (actualRefreshToken) => {
       throw new Error("Refresh token is not valid");
     }
   } catch (error) {
-    console.log(error);
     throw new Error("Token not valid!");
   }
 };
