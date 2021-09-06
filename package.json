@@ -19,6 +19,7 @@
     "jest": "^27.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.8",
+    "mongoose-unique-validator": "^2.0.3",
     "supertest": "^6.1.6"
   },
   "devDependencies": {

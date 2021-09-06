@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import uniqueValidator from "mongoose-unique-validator";
 
 const { Schema, model } = mongoose;
 
 const UserSchema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   isOnline: { type: Boolean, default: false },
   role: {
@@ -52,5 +53,5 @@ UserSchema.statics.checkCredentials = async function (email, plainPW) {
     return "User not found";
   }
 };
-
+UserSchema.plugin(uniqueValidator);
 export default model("User", UserSchema);
