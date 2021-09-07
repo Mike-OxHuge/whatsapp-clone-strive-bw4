@@ -52,6 +52,11 @@ router.route("/login").post(async (req, res, next) => {
   }
 });
 
+router.route("/users").get(JWTAuthMiddleware, async (req, res, next) => {
+  const user = await UserModel.findById(req.body.userId);
+  res.status(200).send(user);
+});
+
 router.route("/me").get(JWTAuthMiddleware, async (req, res, next) => {
   try {
     res.status(200).send(req.user._id);

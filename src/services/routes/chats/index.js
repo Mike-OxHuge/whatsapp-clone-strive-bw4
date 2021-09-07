@@ -31,7 +31,7 @@ router.route("/join-room").post(JWTAuthMiddleware, async (req, res) => {
 });
 export default router;
 
-router.route("/:roomId").get(JWTAuthMiddleware, async (req, res) => {
+router.route("/room").get(JWTAuthMiddleware, async (req, res) => {
   const roomId = req.query.roomId;
   const room = await RoomModel.findOne({ _id: roomId });
   res.status(200).send(room);
