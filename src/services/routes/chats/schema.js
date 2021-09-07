@@ -3,7 +3,7 @@ import UserSchema from "../users/schema.js";
 const { Schema, model } = mongoose;
 
 const MessageSchema = new Schema({
-  text: { type: String, required: true },
+  message: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 

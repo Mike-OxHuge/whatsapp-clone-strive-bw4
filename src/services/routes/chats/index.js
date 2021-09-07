@@ -1,7 +1,7 @@
 import express from "express";
 import { RoomModel, MessageModel } from "./schema.js";
 
-import { JWTAuthMiddleware, JWTAuth, renewTokens } from "../../auth/index.js";
+import { JWTAuthMiddleware } from "../../auth/index.js";
 const router = express.Router();
 
 router.route("/").get(JWTAuthMiddleware, async (req, res) => {
@@ -29,16 +29,24 @@ router.route("/join-room").post(JWTAuthMiddleware, async (req, res) => {
   //   console.log(req.body.roomId); // 61374264d2dcc13ef878267c
   res.status(200).send(room);
 });
-export default router;
-
 router.route("/room").get(JWTAuthMiddleware, async (req, res) => {
   const roomId = req.query.roomId;
   const room = await RoomModel.findOne({ _id: roomId });
   res.status(200).send(room);
 });
 
-// Britney:
-// Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM3MzAyY2VmNjhkMzIzM2RjNTUzYzgiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJCcml0bmV5IiwiaWF0IjoxNjMxMDEyMjA4LCJleHAiOjE2MzE2MTcwMDh9.0tzfLJSe0OxrRhd-eRx4p_8-Jeo-m4uI9Rfc3lXydrU
+router.route("/new-message").post(JWTAuthMiddleware, async (req, res) => {
+  const message = await new MessageModel({
+    message: req.body.message,
+    user: req.user._id,
+  });
+  console.log(req.user); // always Whitney, even with Britney's token
+  const newMessage = await RoomModel.findByIdAndUpdate(
+    { _id: req.body.roomId },
+    { $push: { messages: message } },
+    { new: true }
+  );
+  res.status(201).send(newMessage);
+});
 
-// Whitney
-// Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM3NDAwYWQ2YWNmOTNiNjY2ODQxYWEiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJXaHRuZXkiLCJpYXQiOjE2MzEwMTA4MzUsImV4cCI6MTYzMTYxNTYzNX0.IA8nrXmiKcny9U84eYyA3riO9VOSivGzOOAUZI-Db3Q
+export default router;
