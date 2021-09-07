@@ -25,11 +25,17 @@ router.route("/join-room").post(JWTAuthMiddleware, async (req, res) => {
     { $push: { members: user._id } },
     { new: true }
   );
-  console.log(room); // null
-  console.log(req.body.roomId); // 61374264d2dcc13ef878267c
+  //   console.log(room); // null
+  //   console.log(req.body.roomId); // 61374264d2dcc13ef878267c
   res.status(200).send(room);
 });
 export default router;
+
+router.route("/:roomId").get(JWTAuthMiddleware, async (req, res) => {
+  const roomId = req.query.roomId;
+  const room = await RoomModel.findOne({ _id: roomId });
+  res.status(200).send(room);
+});
 
 // Britney:
 // Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM3MzAyY2VmNjhkMzIzM2RjNTUzYzgiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJCcml0bmV5IiwiaWF0IjoxNjMxMDEyMjA4LCJleHAiOjE2MzE2MTcwMDh9.0tzfLJSe0OxrRhd-eRx4p_8-Jeo-m4uI9Rfc3lXydrU
