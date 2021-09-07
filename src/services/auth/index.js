@@ -8,7 +8,7 @@ const createAccessToken = (payload) =>
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: "15m" },
+      { expiresIn: "1 week" },
       (err, token) => {
         if (err) {
           reject(err);
@@ -71,7 +71,7 @@ export const JWTAuth = async (user) => {
 
 /* ~~~~~~~~~ auth with credentials ~~~~~~~~~ */
 export const JWTAuthMiddleware = async (req, res, next) => {
-  const token = req.cookies.accessToken;
+  const token = req.cookies.accessToken || req.headers.authorization;
   console.log(token);
   if (!token) {
     return next(createError(401));

@@ -4,21 +4,33 @@ import uniqueValidator from "mongoose-unique-validator";
 
 const { Schema, model } = mongoose;
 
-const UserSchema = new Schema({
-  name: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  isOnline: { type: Boolean, default: false },
-  role: {
-    type: String,
-    enum: ["admin", "user"],
-    default: "user",
+const UserSchema = new Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    isOnline: { type: Boolean, default: false },
+    avatar: {
+      type: String,
+      default: "",
+    },
+    role: {
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
+    },
+    refreshToken: { type: String },
   },
-  refreshToken: { type: String },
-});
+  { timestamps: true }
+);
 
 UserSchema.pre("save", async function (next) {
   const newUser = this; // this is the user object
+  if (newUser.createdAt === newUser.updatedAt) {
+    const avatar = "https://eu.ui-avatars.com/api/?name=" + newUser.name;
+    newUser.avatar = avatar;
+  }
+
   const plainPW = newUser.password;
   if (newUser.isModified("password")) {
     newUser.password = await bcrypt.hash(plainPW, 10);
