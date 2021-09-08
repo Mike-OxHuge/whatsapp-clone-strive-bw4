@@ -19,14 +19,11 @@ router.route("/create-room").post(JWTAuthMiddleware, async (req, res) => {
 
 router.route("/join-room").post(JWTAuthMiddleware, async (req, res) => {
   const user = req.user;
-  console.log(user);
   const room = await RoomModel.findOneAndUpdate(
     { _id: req.body.roomId },
     { $push: { members: user._id } },
     { new: true }
   );
-  //   console.log(room); // null
-  //   console.log(req.body.roomId); // 61374264d2dcc13ef878267c
   res.status(200).send(room);
 });
 router.route("/room").get(JWTAuthMiddleware, async (req, res) => {
@@ -40,13 +37,22 @@ router.route("/new-message").post(JWTAuthMiddleware, async (req, res) => {
     message: req.body.message,
     user: req.user._id,
   });
-  console.log(req.user); // always Whitney, even with Britney's token
   const newMessage = await RoomModel.findByIdAndUpdate(
     { _id: req.body.roomId },
     { $push: { messages: message } },
     { new: true }
   );
   res.status(201).send(newMessage);
+});
+
+router.route("/my-rooms").get(JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const user = req.user;
+    const rooms = await RoomModel.find({ members: user._id });
+    res.status(200).send(rooms);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

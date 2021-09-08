@@ -9,7 +9,7 @@ router.route("/").get(async (req, res, next) => {
       This is made for free heroku tier, so this endpoint is called upon inital load.
       `);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 

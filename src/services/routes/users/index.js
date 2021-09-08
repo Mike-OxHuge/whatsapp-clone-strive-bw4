@@ -4,12 +4,9 @@ import { JWTAuthMiddleware, JWTAuth, renewTokens } from "../../auth/index.js";
 
 const router = express.Router();
 
-router.route("/renew-tokens").post(async (req, res) => {
-  // console.log(req.cookies.accessToken);
-  // console.log(req.cookies.refreshToken);
+router.route("/renew-tokens").post(async (req, res, next) => {
   try {
     const oldRefreshToken = req.cookies.refreshToken;
-    console.log(oldRefreshToken); // undefined
     const { accessToken, refreshToken } = await renewTokens(oldRefreshToken);
     res.cookie("accessToken", accessToken, { httpOnly: true });
     res.cookie("refreshToken", refreshToken, {
@@ -18,7 +15,7 @@ router.route("/renew-tokens").post(async (req, res) => {
     });
     res.send({ accessToken, refreshToken });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 

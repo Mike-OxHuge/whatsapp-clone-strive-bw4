@@ -72,7 +72,6 @@ export const JWTAuth = async (user) => {
 /* ~~~~~~~~~ auth with credentials ~~~~~~~~~ */
 export const JWTAuthMiddleware = async (req, res, next) => {
   const token = req.cookies.accessToken || req.headers.authorization;
-  console.log(token);
   if (!token) {
     return next(createError(401));
   }
@@ -96,9 +95,7 @@ export const renewTokens = async (actualRefreshToken) => {
     const decoded = await verifyRefreshJWT(
       actualRefreshToken.replace("Bearer ", "")
     );
-    console.log("decoded token", decoded);
     const user = await UserModel.findById(decoded._id);
-    console.log(user);
     if (!user) {
       throw new Error("User not found");
     }

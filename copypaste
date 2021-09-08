@@ -1,0 +1,30 @@
+chats/create-room
+chats/join-room
+chats/new-message
+
+{
+"roomId": "61378122fbc5387cde47d190"
+}
+
+{
+"message": "message from another user",
+"roomId":"61378122fbc5387cde47d190"
+}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+user/login
+{
+"email":"britney@spears.us",
+"password":"1"
+}
+
+
+{
+"email":"whitney@houston.us",
+"password":"1"
+}
+
+
+
+RoomModel.find({ members: req.user._id.toString() }) 
+to find rooms what user is in
