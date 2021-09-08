@@ -62,4 +62,14 @@ router.route("/me").get(JWTAuthMiddleware, async (req, res, next) => {
   }
 });
 
+router.route("/logout").post(JWTAuthMiddleware, async (req, res, next) => {
+  // await UserModel.findByIdAndUpdate(req.user._id, { refreshToken: null });
+  res.cookie("accessToken", "", { httpOnly: true });
+  res.cookie("refreshToken", "", {
+    httpOnly: true,
+    path: "/api/v1/user/renew-tokens",
+  });
+  res.status(200).send({ message: "Logged out successfully!" });
+});
+
 export default router;

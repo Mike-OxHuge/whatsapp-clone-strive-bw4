@@ -30,6 +30,11 @@ POST /api/v1/user/login
 requires email and password
 returns tokens (as cookie and as a response)
 
+# LOGOUT
+
+POST /api/v1/user/logout
+returns message: "Logged out successfully!"
+
 # RENEW TOKENS
 
 POST /api/v1/user/renew-tokens
