@@ -2,7 +2,7 @@ import server from "./server.js";
 import mongoose from "mongoose";
 import listEndpoints from "express-list-endpoints";
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3030;
 
 console.table(listEndpoints(server));
 
