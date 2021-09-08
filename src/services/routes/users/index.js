@@ -56,7 +56,7 @@ router.route("/users").get(JWTAuthMiddleware, async (req, res, next) => {
 
 router.route("/me").get(JWTAuthMiddleware, async (req, res, next) => {
   try {
-    res.status(200).send(req.user._id);
+    res.status(200).send(req.user);
   } catch (error) {
     next(error);
   }

@@ -45,7 +45,7 @@ UserSchema.methods.toJSON = function () {
 
   const userObject = userDocument.toObject();
 
-  // delete userObject.password;
+  delete userObject.password;
   delete userObject.refreshToken;
   delete userObject.__v; // don't display this crap
 
