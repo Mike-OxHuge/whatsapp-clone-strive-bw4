@@ -1,6 +1,7 @@
 import express from "express";
 import UserModel from "./schema.js";
 import { JWTAuthMiddleware, JWTAuth, renewTokens } from "../../auth/index.js";
+// import { socket } from "../../websocket/index.js";
 
 const router = express.Router();
 
@@ -39,7 +40,7 @@ router.route("/login").post(async (req, res, next) => {
         httpOnly: true,
         path: "/api/v1/user/renew-tokens",
       });
-
+      // socket.emit("newLogin", user.name); // does not work, socket is undefined
       res.status(200).send({ accessToken, refreshToken }); // access token stays on client
     } else {
       next(createError(401, "Credentials not valid!"));
